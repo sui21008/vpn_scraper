@@ -69,11 +69,13 @@ async function get_data(page: Page): Promise<Map<string, Data>> {
             if (index !== undefined) {
                 if (!map.has(index)) {
                     const [name, ext] = await get_file_name(row, index);
+                    const size = await get_size(row, index);
                     const date = await get_date(row, index);
 
                     const data = {
                         name: name,
                         ext: ext,
+                        size: size,
                         date: date,
                     };
 
@@ -101,6 +103,14 @@ async function get_file_name(row: Locator, index: string): Promise<[string, stri
     return [split[0], split[1]];
 }
 
+async function get_size(row: Locator, index: string): Promise<string> {
+    const size = await row
+        .locator(`#file_list_table-tableRow-cell_${index}_size`)
+        .textContent();
+
+    return size?.trimEnd() ?? "ERROR";
+}
+
 async function get_date(row: Locator, index: string): Promise<string> {
     const date = await row
         .locator(`#file_list_table-tableRow-cell_${index}_timestamp`)
@@ -112,7 +122,7 @@ async function get_date(row: Locator, index: string): Promise<string> {
 function printAll(map: Map<string, Data>, filename: string) {
     const arr = [];
     for (const [index, data] of map.entries()) {
-        arr.push(`${index},${data.name},${data.ext},${data.date}`);
+        arr.push(`${index},${data.name},${data.ext},${data.size},${data.date}`);
     }
 
     const csv_str = arr.join("\n");

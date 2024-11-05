@@ -7,5 +7,6 @@ export type Config = {
 export type Data = {
     name: string;
     ext: string;
+    size: string;
     date: string;
 }
