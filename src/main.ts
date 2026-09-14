@@ -49,7 +49,8 @@ async function cd(page: Page, target: string) {
     const dir_names = target.split("/");
 
     for (const dir_name of dir_names) {
-        await page.getByText(dir_name).click();
+        // 正規表現で完全一致
+        await page.getByRole('link', { name: dir_name, exact: true }).click();
     }
 }
 
@@ -108,7 +109,7 @@ async function get_size(row: Locator, index: string): Promise<string> {
         .locator(`#file_list_table-tableRow-cell_${index}_size`)
         .textContent();
 
-    return size?.trimEnd() ?? "ERROR";
+    return size?.trim() ?? "ERROR";
 }
 
 async function get_date(row: Locator, index: string): Promise<string> {
@@ -116,7 +117,7 @@ async function get_date(row: Locator, index: string): Promise<string> {
         .locator(`#file_list_table-tableRow-cell_${index}_timestamp`)
         .textContent();
 
-    return date?.trimEnd() ?? "ERROR";
+    return date?.trim() ?? "ERROR";
 }
 
 function printAll(map: Map<string, Data>, filename: string) {
